@@ -1,0 +1,12 @@
+.git
+.idea
+.build
+build
+.gradle
+gradle
+sandbox
+scripts
+saveGameNotes.txt
+gradlew*
+src
+resources

@@ -1,0 +1,47 @@
+group 'org.fuchs'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3'
+    testCompile group: 'junit', name: 'junit-dep', version: '4.10'
+    testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '1.9.+'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
+}
+
+def inputPath = 'C:\\Users\\fuchs\\Documents\\Paradox Interactive\\Crusader Kings II\\HIP\\save games'
+
+import java.time.LocalDateTime
+
+task cp (type: Copy){
+    Thread.sleep(10000)
+    from inputPath + '\\autosave.ck2'
+    def destPath = 'D:\\ParadoxSaveGames\\CK2\\vonTyrol'
+    into destPath
+
+    def customYear = LocalDateTime.now().year
+    def customMonth = LocalDateTime.now().monthValue
+    def customDay = LocalDateTime.now().dayOfMonth
+    def customHour = LocalDateTime.now().hour
+    def customMinute = LocalDateTime.now().minute
+    def customSecond = LocalDateTime.now().second
+    def customTimestamp = customYear + '_'+ customMonth + '_' + customDay +
+            '_' + customHour + '_' + customMinute + '_' + customSecond
+    rename { String fileName ->
+        fileName.replace('autosave.ck2', 'vonTyrol' + customTimestamp + '.ck2')
+    }
+}
+
+task watchDir {
+    inputs.file(inputPath + '\\autosave.ck2')
+    dependsOn cp
+}
