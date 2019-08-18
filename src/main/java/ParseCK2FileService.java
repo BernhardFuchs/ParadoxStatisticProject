@@ -16,6 +16,53 @@ public class ParseCK2FileService {
     public static final String TAB_PREFIX = "\t";
     public static final String EQUAL_SUFFIX = "=";
 
+    public Map<String, Map<String, Map<String, String>>> readNestedMultiLineValues(String filename, String searchTerm) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(filename));
+        Map<String, Map<String, Map<String, String>>> valueMap = new HashMap<>();
+        String line;
+        do {
+            line = bufferedReader.readLine();
+            if (StringUtils.startsWith(line, TAB_PREFIX + searchTerm + EQUAL_SUFFIX)){
+                valueMap = extractNestedValueMap(line, bufferedReader);
+                break;
+            }
+        } while (line != null);
+
+        return valueMap;
+    }
+
+    private Map<String, Map<String, Map<String, String>>> extractNestedValueMap(String line, BufferedReader bufferedReader) throws IOException {
+        Map<String, Map<String, String>> subMap = new HashMap<>();
+
+        String subLine;
+        do {
+            subLine = bufferedReader.readLine();
+            if (isNotOpenBracket(subLine) && isNotClosingBracket(subLine)){
+                if(StringUtils.isNumeric(stripSpecialChars(StringUtils.remove(subLine, EQUAL_SUFFIX)))){
+                    Map<String, String> valueMap = new HashMap<>();
+                    String subKey = extractKey(subLine);
+
+                    String valueLine;
+                    do {
+                        valueLine = bufferedReader.readLine();
+                        if (isNotOpenBracket(valueLine) && isNotClosingBracket(valueLine)){
+                            String valueKey = extractKey(valueLine);
+                            String valueValue = extractValue(subLine);
+                            valueMap.put(valueKey, valueValue);
+                        }
+                    } while (isNotClosingBracket(valueLine));
+                    subMap.put(subKey, valueMap);
+                    subLine = valueLine;
+                }
+            }
+        } while (isNotClosingBracket(subLine));
+
+        Map<String, Map<String, Map<String, String>>> rootMap = new HashMap<>();
+        rootMap.put(line, subMap);
+
+        return null;
+    }
+
     public Map<String, Map<String, String>> readMultiLineValue(String filename, String searchTerm) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(filename));
         Map<String, Map<String, String>> valueMap = new HashMap<>();

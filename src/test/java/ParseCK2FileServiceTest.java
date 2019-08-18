@@ -2,14 +2,12 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by fuchs on 25/08/2017.
@@ -24,6 +22,13 @@ public class ParseCK2FileServiceTest {
     @Before
     public void setUp(){
         parseCK2FileService = new ParseCK2FileService();
+    }
+
+    @Ignore
+    @Test
+    public void
+    given_isValidSearchForDynasties_REAL_FILE_then_correctValuesAreReturned() throws IOException {
+        parseCK2FileService.readNestedMultiLineValues(REAL_FILE_FILENAME, "dynasties");
     }
 
     @Test
